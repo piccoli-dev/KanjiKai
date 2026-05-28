@@ -81,7 +81,7 @@ struct ProfileView: View {
             VStack(spacing: 0) {
                 settingsRow(title: "Native language", value: "English", icon: "globe")
                 Divider().background(Color.softGray)
-                settingsRow(title: "Daily goal", value: "20 cards", icon: "target")
+                settingsRow(title: "Daily goal", value: "\(20) cards", icon: "target")
                 Divider().background(Color.softGray)
                 settingsRow(title: "Notifications", value: "On", icon: "bell.fill")
                 Divider().background(Color.softGray)

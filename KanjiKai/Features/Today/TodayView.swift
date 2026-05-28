@@ -15,7 +15,7 @@ struct TodayView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Hi, Kristin")
+                    Text("Hi, \("Kristin")")
                         .font(KanjiKaiFont.bold(34, relativeTo: .largeTitle))
                         .foregroundStyle(Color.primaryBrown)
 
@@ -90,9 +90,9 @@ struct TodayView: View {
                 SectionHeader("Today's plan")
 
                 VStack(alignment: .leading, spacing: 10) {
-                    planRow("Review 15 kanji", icon: "checkmark.circle.fill", color: .sage)
-                    planRow("Learn 5 new kanji", icon: "sparkles", color: .apricot)
-                    planRow("Practice 3 difficult kanji", icon: "pencil.and.outline", color: .coral)
+                    planRow("Review \(15) kanji", icon: "checkmark.circle.fill", color: .sage)
+                    planRow("Learn \(5) new kanji", icon: "sparkles", color: .apricot)
+                    planRow("Practice \(3) difficult kanji", icon: "pencil.and.outline", color: .coral)
                 }
 
                 PrimaryButton("Start training", icon: "play.fill")

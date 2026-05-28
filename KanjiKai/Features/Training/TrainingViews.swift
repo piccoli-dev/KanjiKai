@@ -50,11 +50,11 @@ struct TrainingDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(task.title)
+                    Text(LocalizedStringKey(task.title))
                         .font(KanjiKaiFont.bold(34, relativeTo: .largeTitle))
                         .foregroundStyle(Color.primaryBrown)
 
-                    Text(task.subtitle)
+                    Text(LocalizedStringKey(task.subtitle))
                         .font(KanjiKaiFont.regular(17))
                         .foregroundStyle(Color.secondaryBrown)
                 }

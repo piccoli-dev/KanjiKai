@@ -118,12 +118,12 @@ struct KanjiCard: View {
                 .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.charcoal)
 
-            Text(item.meaning)
+            Text(LocalizedStringKey(item.meaning))
                 .font(KanjiKaiFont.medium(15))
                 .foregroundStyle(Color.primaryBrown)
                 .lineLimit(1)
 
-            Text(item.masteryLevel.rawValue)
+            Text(LocalizedStringKey(item.masteryLevel.rawValue))
                 .font(KanjiKaiFont.medium(12))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
@@ -155,11 +155,11 @@ struct TrainingTaskCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(task.title)
+                Text(LocalizedStringKey(task.title))
                     .font(KanjiKaiFont.semiBold(18))
                     .foregroundStyle(Color.primaryBrown)
 
-                Text(task.subtitle)
+                Text(LocalizedStringKey(task.subtitle))
                     .font(KanjiKaiFont.regular(14))
                     .foregroundStyle(Color.secondaryBrown.opacity(0.78))
                     .lineLimit(2)
@@ -187,7 +187,7 @@ struct ProgressStatCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(stat.title)
+            Text(LocalizedStringKey(stat.title))
                 .font(KanjiKaiFont.medium(14))
                 .foregroundStyle(Color.secondaryBrown)
 
@@ -195,7 +195,7 @@ struct ProgressStatCard: View {
                 .font(KanjiKaiFont.bold(30, relativeTo: .title))
                 .foregroundStyle(Color.primaryBrown)
 
-            Text(stat.subtitle)
+            Text(LocalizedStringKey(stat.subtitle))
                 .font(KanjiKaiFont.regular(13))
                 .foregroundStyle(Color.secondaryBrown.opacity(0.75))
         }

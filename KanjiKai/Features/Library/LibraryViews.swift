@@ -7,11 +7,29 @@
 
 import SwiftUI
 
+enum LibraryFilter: String, CaseIterable, Identifiable {
+    case kanji = "Kanji"
+    case vocab = "Vocab"
+    case radicals = "Radicals"
+    case favorites = "Favorites"
+
+    var id: String { self.rawValue }
+
+    var localized: String {
+        switch self {
+        case .kanji: return String(localized: "Kanji")
+        case .vocab: return String(localized: "Vocab")
+        case .radicals: return String(localized: "Radicals")
+        case .favorites: return String(localized: "Favorites")
+        }
+    }
+}
+
 struct LibraryView: View {
     @State private var searchText = ""
-    @State private var selectedFilter = "Kanji"
+    @State private var selectedFilter: LibraryFilter = .kanji
 
-    private let filters = ["Kanji", "Vocab", "Radicals", "Favorites"]
+    private let filters = LibraryFilter.allCases
     private let kanji = MockYukimojiData.libraryKanji
 
     private var filteredKanji: [KanjiItem] {
@@ -19,10 +37,11 @@ struct LibraryView: View {
             let matchesSearch = searchText.isEmpty
                 || item.character.localizedCaseInsensitiveContains(searchText)
                 || item.meaning.localizedCaseInsensitiveContains(searchText)
+                || String(localized: LocalizedStringResource(stringLiteral: item.meaning)).localizedCaseInsensitiveContains(searchText)
                 || item.reading.localizedCaseInsensitiveContains(searchText)
                 || item.category.localizedCaseInsensitiveContains(searchText)
 
-            let matchesFilter = selectedFilter != "Favorites" || item.isFavorite
+            let matchesFilter = selectedFilter != .favorites || item.isFavorite
             return matchesSearch && matchesFilter
         }
     }
@@ -60,9 +79,9 @@ struct LibraryView: View {
     private var filterChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(Array(filters.enumerated()), id: \.element) { index, filter in
+                ForEach(Array(filters.enumerated()), id: \.element.id) { index, filter in
                     FilterChip(
-                        title: filter,
+                        title: filter.localized,
                         isSelected: selectedFilter == filter,
                         color: chipColor(for: index)
                     ) {
@@ -148,15 +167,15 @@ struct KanjiDetailView: View {
             .padding(20)
         }
         .background(Color.creamBG.ignoresSafeArea())
-        .navigationTitle(item.meaning)
+        .navigationTitle(LocalizedStringKey(item.meaning))
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private var detailRows: some View {
         YukiCard(backgroundColor: Color.warmWhite) {
             VStack(spacing: 12) {
-                infoRow(title: "Category", value: item.category)
-                infoRow(title: "Mastery", value: item.masteryLevel.rawValue)
+                infoRow(title: "Category", value: String(localized: LocalizedStringResource(stringLiteral: item.category)))
+                infoRow(title: "Mastery", value: String(localized: LocalizedStringResource(stringLiteral: item.masteryLevel.rawValue)))
                 infoRow(title: "Favorite", value: item.isFavorite ? "Yes" : "No")
             }
         }
