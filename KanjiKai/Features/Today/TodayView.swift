@@ -8,14 +8,27 @@
 import SwiftUI
 
 struct TodayView: View {
-    private let recentKanji = MockYukimojiData.recentlyLearnedKanji
-    private let stats = MockYukimojiData.progressStats
+    @Environment(LearningProgressStore.self) private var progressStore
+
+    private let user = AppUser.current
+
+    private var stats: [ProgressStat] {
+        progressStore.progressStats(for: user, totalKanjiCount: LocalKanjiDatabase.n5Kanji.count)
+    }
+
+    private var recentlyLearnedKanji: [KanjiItem] {
+        progressStore.recentlyLearnedKanji(from: LocalKanjiDatabase.n5Kanji)
+    }
+
+    private var nextTrainingKanji: KanjiItem? {
+        progressStore.firstUnlearnedKanji(from: LocalKanjiDatabase.n5Kanji)
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Hi, \("Kristin")")
+                    Text("Hi, \(user.name)")
                         .font(KanjiKaiFont.bold(34, relativeTo: .largeTitle))
                         .foregroundStyle(Color.primaryBrown)
 
@@ -37,17 +50,19 @@ struct TodayView: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader("Recently learned", actionTitle: "See all")
+                if !recentlyLearnedKanji.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader("Recently learned", actionTitle: "See all")
 
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(recentKanji) { item in
-                                KanjiCard(item: item)
-                                    .frame(width: 132)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                ForEach(recentlyLearnedKanji) { item in
+                                    KanjiCard(item: item)
+                                        .frame(width: 132)
+                                }
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
                     }
                 }
             }
@@ -95,7 +110,31 @@ struct TodayView: View {
                     planRow("Practice \(3) difficult kanji", icon: "pencil.and.outline", color: .coral)
                 }
 
-                PrimaryButton("Start training", icon: "play.fill")
+                if let nextTrainingKanji {
+                    NavigationLink {
+                        KanjiTrainingView(kanji: nextTrainingKanji)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "play.fill")
+                            Text("Start training")
+                                .font(KanjiKaiFont.semiBold(17))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .foregroundStyle(Color.warmWhite)
+                        .background(Color.primaryBrown)
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("All kanji learned")
+                        .font(KanjiKaiFont.semiBold(17))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .foregroundStyle(Color.secondaryBrown)
+                        .background(Color.softGray.opacity(0.35))
+                        .clipShape(Capsule())
+                }
             }
         }
     }
@@ -123,5 +162,6 @@ struct TodayView: View {
 #Preview {
     NavigationStack {
         TodayView()
+            .environment(LearningProgressStore())
     }
 }

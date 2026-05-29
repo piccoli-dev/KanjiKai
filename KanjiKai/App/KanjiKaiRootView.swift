@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct KanjiKaiRootView: View {
+    @State private var progressStore = LearningProgressStore()
+
     init() {
         KanjiKaiFont.registerFonts()
     }
@@ -43,6 +45,7 @@ struct KanjiKaiRootView: View {
             }
         }
         .tint(Color.primaryBrown)
+        .environment(progressStore)
     }
 }
 

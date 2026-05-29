@@ -118,7 +118,7 @@ struct KanjiCard: View {
                 .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.charcoal)
 
-            Text(LocalizedStringKey(item.meaning))
+            Text(item.localizedMeaning)
                 .font(KanjiKaiFont.medium(15))
                 .foregroundStyle(Color.primaryBrown)
                 .lineLimit(1)

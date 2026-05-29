@@ -40,10 +40,16 @@ struct TrainingView: View {
 }
 
 struct TrainingDetailView: View {
+    @Environment(LearningProgressStore.self) private var progressStore
+
     let task: TrainingTask
 
     private var isFlashcards: Bool {
         task.title == "Flashcards"
+    }
+
+    private var nextTrainingKanji: KanjiItem? {
+        progressStore.firstUnlearnedKanji(from: LocalKanjiDatabase.n5Kanji)
     }
 
     var body: some View {
@@ -65,7 +71,31 @@ struct TrainingDetailView: View {
                     placeholderPracticeCard
                 }
 
-                PrimaryButton("Start", icon: "play.fill")
+                if let nextTrainingKanji {
+                    NavigationLink {
+                        KanjiTrainingView(kanji: nextTrainingKanji)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "play.fill")
+                            Text("Start")
+                                .font(KanjiKaiFont.semiBold(17))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .foregroundStyle(Color.warmWhite)
+                        .background(Color.primaryBrown)
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("All kanji learned")
+                        .font(KanjiKaiFont.semiBold(17))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .foregroundStyle(Color.secondaryBrown)
+                        .background(Color.softGray.opacity(0.35))
+                        .clipShape(Capsule())
+                }
             }
             .padding(20)
         }
@@ -137,5 +167,6 @@ struct TrainingDetailView: View {
 #Preview {
     NavigationStack {
         TrainingView()
+            .environment(LearningProgressStore())
     }
 }

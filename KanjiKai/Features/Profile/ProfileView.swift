@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ProfileView: View {
-    private let stats = [
-        ProgressStat(title: "Total kanji learned", value: "45", subtitle: "of 100"),
-        ProgressStat(title: "Current streak", value: "16", subtitle: "days"),
-        ProgressStat(title: "Review accuracy", value: "92%", subtitle: "this week")
-    ]
+    @Environment(LearningProgressStore.self) private var progressStore
+
+    private let user = AppUser.current
+
+    private var stats: [ProgressStat] {
+        progressStore.profileStats(totalKanjiCount: LocalKanjiDatabase.n5Kanji.count)
+    }
 
     var body: some View {
         ScrollView {
@@ -63,13 +65,21 @@ struct ProfileView: View {
                 }
 
                 VStack(spacing: 4) {
-                    Text("Kristin")
+                    Text(user.name)
                         .font(KanjiKaiFont.bold(30, relativeTo: .title))
                         .foregroundStyle(Color.primaryBrown)
 
-                    Text("kristin@example.com")
+                    Text(user.email)
                         .font(KanjiKaiFont.regular(16))
                         .foregroundStyle(Color.secondaryBrown)
+
+                    Text(user.localizedLevel)
+                        .font(KanjiKaiFont.semiBold(15))
+                        .foregroundStyle(Color.primaryBrown)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
+                        .background(Color.warmWhite.opacity(0.65))
+                        .clipShape(Capsule())
                 }
             }
             .frame(maxWidth: .infinity)
@@ -79,9 +89,9 @@ struct ProfileView: View {
     private var settingsCard: some View {
         YukiCard(backgroundColor: Color.warmWhite) {
             VStack(spacing: 0) {
-                settingsRow(title: "Native language", value: "English", icon: "globe")
+                settingsRow(title: "Native language", value: user.localizedNativeLanguage, icon: "globe")
                 Divider().background(Color.softGray)
-                settingsRow(title: "Daily goal", value: "\(20) cards", icon: "target")
+                settingsRow(title: "Daily goal", value: "\(user.dailyGoal) cards", icon: "target")
                 Divider().background(Color.softGray)
                 settingsRow(title: "Notifications", value: "On", icon: "bell.fill")
                 Divider().background(Color.softGray)
@@ -124,5 +134,6 @@ struct ProfileView: View {
 #Preview {
     NavigationStack {
         ProfileView()
+            .environment(LearningProgressStore())
     }
 }
