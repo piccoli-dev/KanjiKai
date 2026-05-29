@@ -280,6 +280,8 @@
 "All types" = "Alle Typen";
 "Add to favorites" = "Zu Favoriten hinzufügen";
 "Remove from favorites" = "Aus Favoriten entfernen";
+"Easy mode" = "Einfacher Modus";
+"Snap strokes to the guide" = "Striche an der Führung ausrichten";
 
 /* User progress */
 "Level progress" = "Level-Fortschritt";

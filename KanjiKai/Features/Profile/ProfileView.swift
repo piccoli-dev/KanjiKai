@@ -93,11 +93,47 @@ struct ProfileView: View {
                 Divider().background(Color.softGray)
                 settingsRow(title: "Daily goal", value: "\(user.dailyGoal) cards", icon: "target")
                 Divider().background(Color.softGray)
+                easyModeRow
+                Divider().background(Color.softGray)
                 settingsRow(title: "Notifications", value: "On", icon: "bell.fill")
                 Divider().background(Color.softGray)
                 settingsRow(title: "Appearance", value: "Soft", icon: "paintpalette.fill")
             }
         }
+    }
+
+    private var easyModeRow: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "wand.and.stars")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Color.primaryBrown)
+                .frame(width: 36, height: 36)
+                .background(Color.creamCard)
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Easy mode")
+                    .font(KanjiKaiFont.medium(16))
+                    .foregroundStyle(Color.primaryBrown)
+
+                Text("Snap strokes to the guide")
+                    .font(KanjiKaiFont.regular(13))
+                    .foregroundStyle(Color.secondaryBrown)
+            }
+
+            Spacer()
+
+            Toggle(
+                "",
+                isOn: Binding(
+                    get: { progressStore.isEasyModeEnabled },
+                    set: { progressStore.isEasyModeEnabled = $0 }
+                )
+            )
+            .labelsHidden()
+            .tint(Color.primaryBrown)
+        }
+        .padding(.vertical, 12)
     }
 
     private func settingsRow(title: String, value: String, icon: String) -> some View {

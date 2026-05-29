@@ -14,16 +14,23 @@ final class LearningProgressStore {
         static let completedKanji = "learningProgress.completedKanji"
         static let favoriteKanji = "learningProgress.favoriteKanji"
         static let shouldHidePracticeInstructions = "learningProgress.shouldHidePracticeInstructions"
+        static let isEasyModeEnabled = "learningProgress.isEasyModeEnabled"
     }
 
     private let userDefaults: UserDefaults
     private var completedKanji: [Int: Date]
     private var favoriteKanji: Set<Int>
+    var isEasyModeEnabled: Bool {
+        didSet {
+            userDefaults.set(isEasyModeEnabled, forKey: Keys.isEasyModeEnabled)
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         self.completedKanji = Self.loadCompletedKanji(from: userDefaults)
         self.favoriteKanji = Set(userDefaults.array(forKey: Keys.favoriteKanji) as? [Int] ?? [])
+        self.isEasyModeEnabled = userDefaults.bool(forKey: Keys.isEasyModeEnabled)
     }
 
     func isCompleted(_ kanji: KanjiItem) -> Bool {

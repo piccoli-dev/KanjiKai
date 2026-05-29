@@ -279,14 +279,14 @@ struct KanjiTrainingView: View {
         guard hasAcknowledgedInstructions,
               !isCurrentStepComplete,
               let point = points.last else { return }
-        currentPath.append(point)
+        currentPath.append(adjustedDrawPoint(point))
     }
 
     private func finishStroke(_ points: [CGPoint]) {
         guard hasAcknowledgedInstructions, !isCurrentStepComplete else { return }
 
         if let point = points.last {
-            currentPath.append(point)
+            currentPath.append(adjustedDrawPoint(point))
         }
 
         guard let stroke = strokes[safe: currentStrokeIndex],
@@ -298,7 +298,7 @@ struct KanjiTrainingView: View {
             return
         }
 
-        completedPaths.append(currentPath)
+        completedPaths.append(completedPath(for: stroke, fallback: currentPath))
         currentPath = []
 
         if completedPaths.count == strokes.count {
@@ -354,6 +354,32 @@ struct KanjiTrainingView: View {
         }
         hasAcknowledgedInstructions = true
         isShowingInstructions = false
+    }
+
+    private func adjustedDrawPoint(_ point: CGPoint) -> CGPoint {
+        guard progressStore.isEasyModeEnabled,
+              let stroke = strokes[safe: currentStrokeIndex],
+              stroke.svgPathData != nil else {
+            return point
+        }
+
+        return nearestGuidePoint(to: point, in: stroke) ?? point
+    }
+
+    private func completedPath(for stroke: KanjiStroke, fallback: [CGPoint]) -> [CGPoint] {
+        guard progressStore.isEasyModeEnabled,
+              stroke.svgPathData != nil,
+              !stroke.guidePoints.isEmpty else {
+            return fallback
+        }
+
+        return stroke.guidePoints
+    }
+
+    private func nearestGuidePoint(to point: CGPoint, in stroke: KanjiStroke) -> CGPoint? {
+        stroke.guidePoints.min { lhs, rhs in
+            lhs.distance(to: point) < rhs.distance(to: point)
+        }
     }
 }
 
