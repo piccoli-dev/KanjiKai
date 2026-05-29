@@ -65,7 +65,21 @@ struct TrainingDetailView: View {
                     placeholderPracticeCard
                 }
 
-                PrimaryButton("Start", icon: "play.fill")
+                NavigationLink {
+                    KanjiTrainingView(kanji: MockYukimojiData.defaultTrainingKanji)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "play.fill")
+                        Text("Start")
+                            .font(KanjiKaiFont.semiBold(17))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .foregroundStyle(Color.warmWhite)
+                    .background(Color.primaryBrown)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
             }
             .padding(20)
         }

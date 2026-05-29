@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+struct KanjiExampleWord: Identifiable, Hashable {
+    let id = UUID()
+    let word: String
+    let meaning: String
+}
+
 enum MasteryLevel: String, CaseIterable, Identifiable {
     case apprentice = "Apprentice"
     case adept = "Adept"
@@ -31,29 +37,47 @@ enum MasteryLevel: String, CaseIterable, Identifiable {
 
 struct KanjiItem: Identifiable, Hashable {
     let id: UUID
+    let order: Int
     let character: String
     let meaning: String
     let reading: String
     let category: String
     let masteryLevel: MasteryLevel
     let isFavorite: Bool
+    let isCompleted: Bool
+    let completionDate: Date?
+    let guideCharacter: String
+    let trainingStrokes: [KanjiStroke]
+    let exampleWords: [KanjiExampleWord]
 
     init(
         id: UUID = UUID(),
+        order: Int = 0,
         character: String,
         meaning: String,
         reading: String,
         category: String,
         masteryLevel: MasteryLevel,
-        isFavorite: Bool
+        isFavorite: Bool,
+        isCompleted: Bool = false,
+        completionDate: Date? = nil,
+        guideCharacter: String? = nil,
+        trainingStrokes: [KanjiStroke] = [],
+        exampleWords: [KanjiExampleWord] = []
     ) {
         self.id = id
+        self.order = order
         self.character = character
         self.meaning = meaning
         self.reading = reading
         self.category = category
         self.masteryLevel = masteryLevel
         self.isFavorite = isFavorite
+        self.isCompleted = isCompleted
+        self.completionDate = completionDate
+        self.guideCharacter = guideCharacter ?? character
+        self.trainingStrokes = trainingStrokes
+        self.exampleWords = exampleWords
     }
 }
 

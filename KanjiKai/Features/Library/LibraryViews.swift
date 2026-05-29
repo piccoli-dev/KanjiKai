@@ -135,7 +135,7 @@ struct KanjiDetailView: View {
 
                 detailSection(
                     title: "Example words",
-                    text: "Placeholder vocabulary will appear here with readings, meanings, and short beginner-friendly examples."
+                    text: exampleWordsText
                 )
 
                 detailSection(
@@ -143,7 +143,7 @@ struct KanjiDetailView: View {
                     text: "Practice cards, writing prompts, and review history will connect here later."
                 )
 
-                PrimaryButton("Add to training", icon: "plus.circle.fill", backgroundColor: Color.sage, foregroundColor: Color.primaryBrown)
+                practiceButton
             }
             .padding(20)
         }
@@ -156,10 +156,22 @@ struct KanjiDetailView: View {
         YukiCard(backgroundColor: Color.warmWhite) {
             VStack(spacing: 12) {
                 infoRow(title: "Category", value: item.category)
+                infoRow(title: "Order", value: "#\(item.order)")
                 infoRow(title: "Mastery", value: item.masteryLevel.rawValue)
                 infoRow(title: "Favorite", value: item.isFavorite ? "Yes" : "No")
+                infoRow(title: "Completed", value: item.isCompleted ? "Yes" : "No")
             }
         }
+    }
+
+    private var exampleWordsText: String {
+        guard !item.exampleWords.isEmpty else {
+            return "Example words will appear here as this kanji receives study data."
+        }
+
+        return item.exampleWords
+            .map { "\($0.word) — \($0.meaning)" }
+            .joined(separator: "\n")
     }
 
     private func infoRow(title: String, value: String) -> some View {
@@ -188,6 +200,36 @@ struct KanjiDetailView: View {
                     .foregroundStyle(Color.secondaryBrown)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var practiceButton: some View {
+        Group {
+            if item.trainingStrokes.isEmpty {
+                Text("Stroke guide coming soon")
+                    .font(KanjiKaiFont.semiBold(16))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+                    .foregroundStyle(Color.secondaryBrown)
+                    .background(Color.softGray.opacity(0.35))
+                    .clipShape(Capsule())
+            } else {
+                NavigationLink {
+                    KanjiTrainingView(kanji: item)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "pencil.and.scribble")
+                        Text("Practice \(item.character)")
+                            .font(KanjiKaiFont.semiBold(17))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .foregroundStyle(Color.warmWhite)
+                    .background(Color.primaryBrown)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 }
