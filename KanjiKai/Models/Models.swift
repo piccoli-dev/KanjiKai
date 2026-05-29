@@ -83,7 +83,7 @@ struct KanjiItem: Identifiable, Hashable {
         String(localized: LocalizedStringResource(stringLiteral: meaning))
     }
 
-    func withLearningProgress(completionDate: Date?) -> KanjiItem {
+    func withUserState(completionDate: Date?, isFavorite: Bool) -> KanjiItem {
         KanjiItem(
             id: id,
             order: order,
@@ -100,6 +100,10 @@ struct KanjiItem: Identifiable, Hashable {
             trainingStrokes: trainingStrokes,
             exampleWords: exampleWords
         )
+    }
+
+    func withLearningProgress(completionDate: Date?) -> KanjiItem {
+        withUserState(completionDate: completionDate, isFavorite: isFavorite)
     }
 
     init(

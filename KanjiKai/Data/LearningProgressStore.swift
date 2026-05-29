@@ -12,14 +12,18 @@ import Observation
 final class LearningProgressStore {
     private enum Keys {
         static let completedKanji = "learningProgress.completedKanji"
+        static let favoriteKanji = "learningProgress.favoriteKanji"
+        static let shouldHidePracticeInstructions = "learningProgress.shouldHidePracticeInstructions"
     }
 
     private let userDefaults: UserDefaults
     private var completedKanji: [Int: Date]
+    private var favoriteKanji: Set<Int>
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         self.completedKanji = Self.loadCompletedKanji(from: userDefaults)
+        self.favoriteKanji = Set(userDefaults.array(forKey: Keys.favoriteKanji) as? [Int] ?? [])
     }
 
     func isCompleted(_ kanji: KanjiItem) -> Bool {
@@ -28,6 +32,19 @@ final class LearningProgressStore {
 
     func completionDate(for kanji: KanjiItem) -> Date? {
         completedKanji[kanji.order]
+    }
+
+    func isFavorite(_ kanji: KanjiItem) -> Bool {
+        favoriteKanji.contains(kanji.order)
+    }
+
+    func toggleFavorite(_ kanji: KanjiItem) {
+        if favoriteKanji.contains(kanji.order) {
+            favoriteKanji.remove(kanji.order)
+        } else {
+            favoriteKanji.insert(kanji.order)
+        }
+        saveFavorites()
     }
 
     var learnedKanjiCount: Int {
@@ -60,7 +77,10 @@ final class LearningProgressStore {
 
     func kanjiWithProgress(from kanji: [KanjiItem]) -> [KanjiItem] {
         kanji.map { item in
-            item.withLearningProgress(completionDate: completedKanji[item.order])
+            item.withUserState(
+                completionDate: completedKanji[item.order],
+                isFavorite: favoriteKanji.contains(item.order)
+            )
         }
     }
 
@@ -84,11 +104,23 @@ final class LearningProgressStore {
         save()
     }
 
+    var shouldHidePracticeInstructions: Bool {
+        userDefaults.bool(forKey: Keys.shouldHidePracticeInstructions)
+    }
+
+    func setShouldHidePracticeInstructions(_ shouldHide: Bool) {
+        userDefaults.set(shouldHide, forKey: Keys.shouldHidePracticeInstructions)
+    }
+
     private func save() {
         let payload = Dictionary(uniqueKeysWithValues: completedKanji.map { order, date in
             (String(order), date.timeIntervalSince1970)
         })
         userDefaults.set(payload, forKey: Keys.completedKanji)
+    }
+
+    private func saveFavorites() {
+        userDefaults.set(Array(favoriteKanji).sorted(), forKey: Keys.favoriteKanji)
     }
 
     private func currentStreakInDays(calendar: Calendar, today: Date) -> Int {

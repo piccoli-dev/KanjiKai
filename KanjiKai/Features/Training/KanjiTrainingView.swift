@@ -21,7 +21,8 @@ struct KanjiTrainingView: View {
     @State private var currentPath: [CGPoint] = []
     @State private var feedbackMessage = "Start from the highlighted point."
     @State private var isTrainingComplete = false
-    @State private var isShowingInstructions = true
+    @State private var isShowingInstructions = false
+    @State private var showsInstructionDismissPreference = false
     @State private var hasAcknowledgedInstructions = false
     @State private var canvasShakeTrigger = 0
 
@@ -60,6 +61,7 @@ struct KanjiTrainingView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    showsInstructionDismissPreference = false
                     isShowingInstructions = true
                 } label: {
                     Image(systemName: "info.circle.fill")
@@ -69,11 +71,18 @@ struct KanjiTrainingView: View {
         }
         .sheet(isPresented: $isShowingInstructions) {
             KanjiTrainingInstructionsSheet(
-                onClose: closeInstructions,
-                onUnderstand: closeInstructions
+                showsDismissPreference: showsInstructionDismissPreference,
+                onClose: closeInstructions(shouldHide:),
+                onUnderstand: closeInstructions(shouldHide:)
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
+        }
+        .onAppear {
+            let shouldHideInstructions = progressStore.shouldHidePracticeInstructions
+            hasAcknowledgedInstructions = shouldHideInstructions
+            showsInstructionDismissPreference = !shouldHideInstructions
+            isShowingInstructions = !shouldHideInstructions
         }
         .onChange(of: isShowingInstructions) { _, isShowing in
             if !isShowing {
@@ -339,15 +348,21 @@ struct KanjiTrainingView: View {
         #endif
     }
 
-    private func closeInstructions() {
+    private func closeInstructions(shouldHide: Bool = false) {
+        if shouldHide {
+            progressStore.setShouldHidePracticeInstructions(true)
+        }
         hasAcknowledgedInstructions = true
         isShowingInstructions = false
     }
 }
 
 private struct KanjiTrainingInstructionsSheet: View {
-    let onClose: () -> Void
-    let onUnderstand: () -> Void
+    @State private var shouldHideInstructions = false
+
+    let showsDismissPreference: Bool
+    let onClose: (Bool) -> Void
+    let onUnderstand: (Bool) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -362,9 +377,30 @@ private struct KanjiTrainingInstructionsSheet: View {
                 instructionRow(icon: "sparkles", text: "The hints fade as you move through the 10 steps.")
             }
 
+            if showsDismissPreference {
+                Button {
+                    shouldHideInstructions.toggle()
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: shouldHideInstructions ? "checkmark.square.fill" : "square")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(Color.primaryBrown)
+
+                        Text("Don't show anymore")
+                            .font(KanjiKaiFont.medium(16))
+                            .foregroundStyle(Color.primaryBrown)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+            }
+
             Spacer()
 
-            PrimaryButton("I understand", icon: "checkmark.circle.fill", action: onUnderstand)
+            PrimaryButton("I understand", icon: "checkmark.circle.fill") {
+                onUnderstand(shouldHideInstructions)
+            }
         }
         .padding(.horizontal, 24)
         .padding(.top, 40)
