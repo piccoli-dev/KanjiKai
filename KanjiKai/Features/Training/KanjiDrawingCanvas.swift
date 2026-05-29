@@ -29,7 +29,7 @@ struct KanjiDrawingCanvas: View {
                 subtleGrid(in: drawingSize)
 
                 if guideMode.showsFullGuide {
-                    characterGuide(in: drawingSize)
+                    fullGuide(in: drawingSize)
                 }
 
                 if let currentStroke = strokes[safe: currentStrokeIndex],
@@ -128,6 +128,10 @@ struct KanjiDrawingCanvas: View {
     }
 
     private func strokePath(for stroke: KanjiStroke, in size: CGSize) -> Path {
+        if let svgPathData = stroke.svgPathData {
+            return KanjiVGPathParser.path(from: svgPathData, in: size)
+        }
+
         var path = Path()
 
         if let commands = stroke.guideCommands {

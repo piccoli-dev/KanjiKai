@@ -34,7 +34,7 @@ struct KanjiTrainingView: View {
     }
 
     private var strokes: [KanjiStroke] {
-        kanji.trainingStrokes
+        KanjiVGStrokeProvider.strokes(for: kanji)
     }
 
     private var currentStep: KanjiTrainingStep {

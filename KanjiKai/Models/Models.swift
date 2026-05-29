@@ -47,6 +47,7 @@ struct KanjiItem: Identifiable, Hashable {
     let isCompleted: Bool
     let completionDate: Date?
     let guideCharacter: String
+    let kanjiVGFileName: String?
     let trainingStrokes: [KanjiStroke]
     let exampleWords: [KanjiExampleWord]
 
@@ -62,6 +63,7 @@ struct KanjiItem: Identifiable, Hashable {
         isCompleted: Bool = false,
         completionDate: Date? = nil,
         guideCharacter: String? = nil,
+        kanjiVGFileName: String? = nil,
         trainingStrokes: [KanjiStroke] = [],
         exampleWords: [KanjiExampleWord] = []
     ) {
@@ -76,6 +78,7 @@ struct KanjiItem: Identifiable, Hashable {
         self.isCompleted = isCompleted
         self.completionDate = completionDate
         self.guideCharacter = guideCharacter ?? character
+        self.kanjiVGFileName = kanjiVGFileName
         self.trainingStrokes = trainingStrokes
         self.exampleWords = exampleWords
     }

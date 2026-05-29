@@ -139,6 +139,7 @@ enum LocalKanjiDatabase {
             category: "N5",
             masteryLevel: .apprentice,
             isFavorite: false,
+            kanjiVGFileName: "04e00",
             trainingStrokes: [
                 KanjiStroke(id: 1, strokeType: .horizontal, startPoint: CGPoint(x: 0.25, y: 0.50), endPoint: CGPoint(x: 0.75, y: 0.46), cornerPoint: nil, direction: .leftToRight)
             ],
@@ -159,6 +160,7 @@ enum LocalKanjiDatabase {
             category: "N5",
             masteryLevel: .apprentice,
             isFavorite: false,
+            kanjiVGFileName: "04e8c",
             trainingStrokes: [
                 KanjiStroke(id: 1, strokeType: .horizontal, startPoint: CGPoint(x: 0.36, y: 0.34), endPoint: CGPoint(x: 0.66, y: 0.30), cornerPoint: nil, direction: .leftToRight),
                 KanjiStroke(id: 2, strokeType: .horizontal, startPoint: CGPoint(x: 0.18, y: 0.68), endPoint: CGPoint(x: 0.84, y: 0.62), cornerPoint: nil, direction: .leftToRight)
@@ -180,6 +182,7 @@ enum LocalKanjiDatabase {
             category: "N5",
             masteryLevel: .apprentice,
             isFavorite: false,
+            kanjiVGFileName: "04e09",
             trainingStrokes: [
                 KanjiStroke(id: 1, strokeType: .horizontal, startPoint: CGPoint(x: 0.30, y: 0.24), endPoint: CGPoint(x: 0.70, y: 0.18), cornerPoint: nil, direction: .leftToRight),
                 KanjiStroke(id: 2, strokeType: .horizontal, startPoint: CGPoint(x: 0.34, y: 0.50), endPoint: CGPoint(x: 0.66, y: 0.46), cornerPoint: nil, direction: .leftToRight),
@@ -202,6 +205,7 @@ enum LocalKanjiDatabase {
             category: "N5",
             masteryLevel: .apprentice,
             isFavorite: false,
+            kanjiVGFileName: "056db",
             trainingStrokes: [
                 KanjiStroke(
                     id: 1,
@@ -288,6 +292,7 @@ enum LocalKanjiDatabase {
             category: "N5",
             masteryLevel: .apprentice,
             isFavorite: false,
+            kanjiVGFileName: "065e5",
             trainingStrokes: [
                 KanjiStroke(id: 1, strokeType: .vertical, startPoint: CGPoint(x: 0.30, y: 0.20), endPoint: CGPoint(x: 0.30, y: 0.80), cornerPoint: nil, direction: .topToBottom),
                 KanjiStroke(id: 2, strokeType: .corner, startPoint: CGPoint(x: 0.30, y: 0.20), endPoint: CGPoint(x: 0.70, y: 0.80), cornerPoint: CGPoint(x: 0.70, y: 0.20), direction: .rightThenDown),

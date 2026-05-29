@@ -36,6 +36,7 @@ struct KanjiStroke: Identifiable, Hashable {
     let direction: KanjiStrokeDirection
     private let customGuidePoints: [CGPoint]?
     let guideCommands: [KanjiStrokeGuideCommand]?
+    let svgPathData: String?
 
     init(
         id: Int,
@@ -45,7 +46,8 @@ struct KanjiStroke: Identifiable, Hashable {
         cornerPoint: CGPoint?,
         direction: KanjiStrokeDirection,
         guidePoints: [CGPoint]? = nil,
-        guideCommands: [KanjiStrokeGuideCommand]? = nil
+        guideCommands: [KanjiStrokeGuideCommand]? = nil,
+        svgPathData: String? = nil
     ) {
         self.id = id
         self.strokeType = strokeType
@@ -55,6 +57,7 @@ struct KanjiStroke: Identifiable, Hashable {
         self.direction = direction
         self.customGuidePoints = guidePoints
         self.guideCommands = guideCommands
+        self.svgPathData = svgPathData
     }
 
     var guidePoints: [CGPoint] {
@@ -65,6 +68,20 @@ struct KanjiStroke: Identifiable, Hashable {
         } else {
             [startPoint, endPoint]
         }
+    }
+
+    func withSVGPathData(_ svgPathData: String) -> KanjiStroke {
+        KanjiStroke(
+            id: id,
+            strokeType: strokeType,
+            startPoint: startPoint,
+            endPoint: endPoint,
+            cornerPoint: cornerPoint,
+            direction: direction,
+            guidePoints: customGuidePoints,
+            guideCommands: guideCommands,
+            svgPathData: svgPathData
+        )
     }
 }
 
